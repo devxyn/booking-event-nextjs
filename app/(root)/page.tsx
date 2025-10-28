@@ -1,3 +1,5 @@
+"use cache";
+
 const Home = async () => {
   const response = await fetch("https://jsonplaceholder.typicode.com/albums");
 
