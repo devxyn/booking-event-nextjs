@@ -1,14 +1,18 @@
-import React from "react";
-import Hello from "@/components/hello";
+const Home = async () => {
+  const response = await fetch("https://jsonplaceholder.typicode.com/albums");
 
-const Home = () => {
-  console.log("What type of a component am I?");
+  if (!response.ok) throw new Error("Error fetching data.");
+
+  const albums = await response.json();
 
   return (
-    <>
-      <div className='text-3xl font-bold'>Welcome to next.js</div>
-      <Hello />
-    </>
+    <div>
+      <ul>
+        {albums.map((item: { userId: number; id: number; title: string }) => (
+          <li key={item.id}>{`${item.id}. ${item.title}`}</li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
