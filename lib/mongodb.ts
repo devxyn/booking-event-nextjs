@@ -9,7 +9,7 @@ import mongoose, { type ConnectOptions, type Mongoose } from "mongoose";
  */
 
 // Read the connection string from environment variables once at module load time.
-const MONGODB_URI = process.env.NEXT_PUBLIC_MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI || MONGODB_URI.length === 0) {
   throw new Error("Missing MONGODB_URI environment variable. Please set it in your environment (e.g., .env.local).");
