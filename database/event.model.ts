@@ -109,13 +109,14 @@ const EventSchema = new Schema<IEvent>(
   },
 );
 
-// Pre-save hook for slug generation and data normalization
-EventSchema.pre("save", function (next) {
-  const event = this as IEvent;
+// Pre-validate hook for slug generation and data normalization
+EventSchema.pre("validate", async function (this: HydratedDocument<IEvent>, next) {
+  const event = this;
 
   // Generate slug only if title changed or document is new
   if (event.isModified("title") || event.isNew) {
-    event.slug = generateSlug(event.title);
+    const base = generateSlug(event.title);
+    event.slug = await uniquifySlug(this.constructor as Model<IEvent>, base, event._id);
   }
 
   // Normalize date to ISO format if it's not already
@@ -131,6 +132,14 @@ EventSchema.pre("save", function (next) {
   next();
 });
 
+async function uniquifySlug(EventModel: Model<IEvent>, base: string, excludeId: unknown) {
+  let slug = base;
+  let i = 1;
+  while (await EventModel.exists({ slug, _id: { $ne: excludeId } })) {
+    slug = `${base}-${i++}`;
+  }
+  return slug;
+}
 // Helper function to generate URL-friendly slug
 function generateSlug(title: string): string {
   return title
