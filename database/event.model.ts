@@ -1,4 +1,4 @@
-import { Schema, model, models, Document } from "mongoose";
+import { Schema, model, models, Document, HydratedDocument, Model } from "mongoose";
 
 // TypeScript interface for Event document
 export interface IEvent extends Document {
@@ -111,6 +111,7 @@ const EventSchema = new Schema<IEvent>(
 
 // Pre-validate hook for slug generation and data normalization
 EventSchema.pre("validate", async function (this: HydratedDocument<IEvent>, next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const event = this;
 
   // Generate slug only if title changed or document is new
