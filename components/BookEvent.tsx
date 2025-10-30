@@ -10,20 +10,26 @@ interface BookEventProps {
 }
 
 const BookEvent = ({ eventId, slug }: BookEventProps) => {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const { success } = await createBooking({ eventId, slug, email });
+    const { success, message } = await createBooking({ eventId, slug, email });
+    setIsSubmitting(true);
+    setError(null);
 
     if (success) {
       setSubmitted(true);
       posthog.capture("event-booked");
     } else {
-      console.error("Booking creation failed");
-      posthog.captureException("Booking creation failed");
+      setError(message);
+      posthog.capture("booking_failed", { error: message });
     }
+    setIsSubmitting(false);
   };
 
   return (
@@ -31,7 +37,8 @@ const BookEvent = ({ eventId, slug }: BookEventProps) => {
       {submitted ? (
         <p className='text-sm'>Thank you for signing up!</p>
       ) : (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} aria-busy={isSubmitting}>
+          {error && <p className='text-sm text-red-600'>{error}</p>}
           <div>
             <label htmlFor='email'>Email Address</label>
             <input
@@ -43,8 +50,8 @@ const BookEvent = ({ eventId, slug }: BookEventProps) => {
               required
             />
           </div>
-          <button type='submit' className='button-submit'>
-            Submit
+          <button type='submit' className='button-submit' disabled={isSubmitting}>
+            {!isSubmitting ? "Submit" : "Submitting..."}
           </button>
         </form>
       )}
