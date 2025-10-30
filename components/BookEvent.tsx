@@ -1,6 +1,6 @@
 "use client";
 
-import { createBooking } from "@/lib/actions/booking.action";
+import { createBooking } from "@/lib/actions/booking.actions";
 import posthog from "posthog-js";
 import { FormEvent, useState } from "react";
 
