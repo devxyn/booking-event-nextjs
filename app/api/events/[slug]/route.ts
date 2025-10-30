@@ -41,7 +41,7 @@ export async function GET(req: NextRequest, { params }: RouteParams): Promise<Ne
       }
 
       // Return generic error with error message
-      return NextResponse.json({ message: "Failed to fetch events", error: error.message }, { status: 500 });
+      return NextResponse.json({ message: "Failed to fetch events" }, { status: 500 });
     }
 
     // Handle unknown errors
