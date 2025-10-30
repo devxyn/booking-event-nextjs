@@ -1,4 +1,4 @@
-import { Schema, model, models, Document, HydratedDocument, Model } from "mongoose";
+import { Schema, model, models, Document } from "mongoose";
 
 // TypeScript interface for Event document
 export interface IEvent extends Document {
@@ -109,15 +109,13 @@ const EventSchema = new Schema<IEvent>(
   },
 );
 
-// Pre-validate hook for slug generation and data normalization
-EventSchema.pre("validate", async function (this: HydratedDocument<IEvent>, next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const event = this;
+// Pre-save hook for slug generation and data normalization
+EventSchema.pre("save", function (next) {
+  const event = this as IEvent;
 
   // Generate slug only if title changed or document is new
   if (event.isModified("title") || event.isNew) {
-    const base = generateSlug(event.title);
-    event.slug = await uniquifySlug(this.constructor as Model<IEvent>, base, event._id);
+    event.slug = generateSlug(event.title);
   }
 
   // Normalize date to ISO format if it's not already
@@ -133,14 +131,6 @@ EventSchema.pre("validate", async function (this: HydratedDocument<IEvent>, next
   next();
 });
 
-async function uniquifySlug(EventModel: Model<IEvent>, base: string, excludeId: unknown) {
-  let slug = base;
-  let i = 1;
-  while (await EventModel.exists({ slug, _id: { $ne: excludeId } })) {
-    slug = `${base}-${i++}`;
-  }
-  return slug;
-}
 // Helper function to generate URL-friendly slug
 function generateSlug(title: string): string {
   return title
