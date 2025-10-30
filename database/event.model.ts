@@ -33,7 +33,6 @@ const EventSchema = new Schema<IEvent>(
       unique: true,
       lowercase: true,
       trim: true,
-      index: false,
     },
     description: {
       type: String,
