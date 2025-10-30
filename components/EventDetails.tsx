@@ -11,7 +11,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const EventDetailItem = ({ icon, alt, label }: { icon: string; alt: string; label: string }) => (
   <div className='flex-row-gap-2 items-center'>
-    <Image src={icon} alt={alt} width={17} height={17} />
+    <Image src={icon} alt={alt} width={17} height={17} className='w-auto h-auto' />
     <p>{label}</p>
   </div>
 );
