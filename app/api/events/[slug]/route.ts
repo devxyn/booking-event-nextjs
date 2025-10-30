@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, { params }: RouteParams): Promise<Ne
     const event = await Event.findOne({ slug: sanitizedSlug }).lean();
 
     if (!event) {
-      return NextResponse.json({ message: `Event with slug ${sanitizedSlug} not found` }, { status: 400 });
+      return NextResponse.json({ message: `Event with slug ${sanitizedSlug} not found` }, { status: 404 });
     }
 
     return NextResponse.json({ message: "Event fetched successfully", event }, { status: 200 });
