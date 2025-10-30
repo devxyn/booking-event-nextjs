@@ -30,7 +30,7 @@ export async function GET(req: NextRequest, { params }: RouteParams): Promise<Ne
   } catch (error) {
     // Log error for debugging (only in development)
     if (process.env.NODE_ENV === "development") {
-      console.error("Error fetching events by slug:", error);
+      console.error("Error fetching event by slug:", error);
     }
 
     // Handle specific error types
