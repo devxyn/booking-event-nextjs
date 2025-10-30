@@ -18,9 +18,10 @@ const BookEvent = ({ eventId, slug }: BookEventProps) => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const { success, message } = await createBooking({ eventId, slug, email });
     setIsSubmitting(true);
     setError(null);
+
+    const { success, message } = await createBooking({ eventId, slug, email });
 
     if (success) {
       setSubmitted(true);
