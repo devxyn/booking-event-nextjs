@@ -1,17 +1,36 @@
 "use client";
 
+import { createBooking } from "@/lib/actions/booking.actions";
+import posthog from "posthog-js";
 import { FormEvent, useState } from "react";
 
-const BookEvent = () => {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+interface BookEventProps {
+  eventId: string;
+  slug: string;
+}
 
-  const handleSubmit = (e: FormEvent) => {
+const BookEvent = ({ eventId, slug }: BookEventProps) => {
+  const [email, setEmail] = useState<string>("");
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
 
-    setTimeout(() => {
+    const { success, message } = await createBooking({ eventId, slug, email });
+
+    if (success) {
       setSubmitted(true);
-    }, 1000);
+      posthog.capture("event-booked");
+    } else {
+      setError(message);
+      posthog.capture("booking_failed", { error: message });
+    }
+    setIsSubmitting(false);
   };
 
   return (
@@ -19,7 +38,8 @@ const BookEvent = () => {
       {submitted ? (
         <p className='text-sm'>Thank you for signing up!</p>
       ) : (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} aria-busy={isSubmitting}>
+          {error && <p className='text-sm text-red-600'>{error}</p>}
           <div>
             <label htmlFor='email'>Email Address</label>
             <input
@@ -31,8 +51,8 @@ const BookEvent = () => {
               required
             />
           </div>
-          <button type='submit' className='button-submit'>
-            Submit
+          <button type='submit' className='button-submit' disabled={isSubmitting}>
+            {!isSubmitting ? "Submit" : "Submitting..."}
           </button>
         </form>
       )}
