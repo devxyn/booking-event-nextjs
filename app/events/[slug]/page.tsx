@@ -1,7 +1,7 @@
 import BookEvent from "@/components/BookEvent";
 import EventCard from "@/components/EventCard";
 import { IEvent } from "@/database";
-import { getSimiliarEventsBySlug } from "@/lib/actions/event.action";
+import { getSimilarEventsBySlug } from "@/lib/actions/event.action";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -68,7 +68,7 @@ const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> 
 
   const bookings = 10;
 
-  const similarEvents: IEvent[] = await getSimiliarEventsBySlug(slug);
+  const similarEvents: IEvent[] = await getSimilarEventsBySlug(slug);
 
   return (
     <section id='event'>
@@ -124,7 +124,7 @@ const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> 
         <h2>Similar Events</h2>
         <div className='events'>
           {similarEvents.length > 0 &&
-            similarEvents.map((similarEvent: IEvent) => <EventCard key={similarEvent.title} {...similarEvent} />)}
+            similarEvents.map((similarEvent: IEvent) => <EventCard key={similarEvent._id} {...similarEvent} />)}
         </div>
       </div>
     </section>
