@@ -15,9 +15,9 @@ const martianMono = Martian_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TechCon | Developer Events & Conventions",
+  title: "EventLoop",
   description:
-    "Discover and explore a comprehensive listing of developer conventions and tech events. Stay up-to-date and connect with the global developer community with TechCon.",
+    "Find, explore, and join top developer events, tech meetups, and programming conferences worldwide. Stay connected with the global dev community on EventLoop.",
 };
 
 export default function RootLayout({
